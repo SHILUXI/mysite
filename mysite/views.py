@@ -1,12 +1,16 @@
 import datetime
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from django.db.models import Sum
+from django.db.models import Q # |是 or 的意思
 from django.core.cache import cache
+from django.core.paginator import Paginator
 from django.urls import reverse
+
 from read_statistics.utils import get_seven_days_read_data, get_today_hot_data, get_yesterday_hot_data
 from blog.models import Blog
+from notifications.models import Notification
 
 
 def get_7_days_hot_blogs():
@@ -36,3 +40,38 @@ def home(request):
     context['yesterday_hot_data'] = get_yesterday_hot_data(blog_content_type)
     context['hot_blogs_for_7_days'] = hot_blogs_for_7_days
     return render(request, 'home.html', context)
+
+def my_notifications(request):
+    context = {}
+    return render(request,'my_notifications.html',context)
+
+def my_notification(request,my_notification_pk):
+    my_notification = get_object_or_404(Notification, pk=my_notification_pk)
+    my_notification.unread = False
+    my_notification.save()
+    return redirect(my_notification.data['url'])
+
+def search(request):
+    search_word = request.GET.get('wd','').strip()
+    condition = None
+    for word in search_word.split(' '):
+        if condition is None:
+            condition = Q(title__icontains=word)
+        else:
+            condition = condition | Q(title__icontains=word)
+    search_blogs = []
+    if condition is not None:
+        #筛选 搜索
+        search_blogs = Blog.objects.filter(condition)
+
+    #分页
+    paginator = Paginator(search_blogs, 10)  #分页的对象和一页的最大列表数
+    page_num = request.GET.get('page', 1)  # 获取url的页面参数（GET请求）会用到&page=...
+    page_of_blogs = paginator.get_page(page_num) #返回页面
+
+    context = {}
+    context['search_word'] = search_word
+    context['search_blogs'] = search_blogs
+    context['search_blogs_count'] = search_blogs.count()
+    context['page_of_blogs'] = page_of_blogs
+    return  render(request,'search.html',context)
