@@ -16,9 +16,3 @@ ul.navbar-right {
     background-color:#d9534f!important;
 }
 
-.search-form button[type="submit"] {
-    background: none;
-    border: none;
-    margin-left: -2.7em;
-    color: #aaa;
-}
