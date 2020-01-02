@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}我的网站{% endblock %}
+{% block title %}我要学习{% endblock %}
 {% block nav_blog_active %}active{% endblock %}
 
 {% load staticfiles %}
@@ -22,13 +22,19 @@
                             <div class="blog">
                                 <h3><a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a></h3>
                                 <p class="blog-info">
-                                    <span class="glyphicon glyphicon-tag"></span> <a href="{% url 'blogs_with_type' blog.blog_type.pk %}">{{ blog.blog_type }}</a>&nbsp;&nbsp;
-                                    <span class="glyphicon glyphicon-time"></span> {{ blog.created_time|date:"Y-m-d" }}&nbsp;&nbsp;
+                                    {% if blog.blog_type.pk == 1 %}
+                                        <a href="{% url 'blogs_with_type' blog.blog_type.pk %}"><button type="button" class="btn btn-primary btn-xs" >{{ blog.blog_type }}</button></a>
+                                    {% elif blog.blog_type.pk == 4 %}
+                                        <a href="{% url 'blogs_with_type' blog.blog_type.pk %}"><button type="button" class="btn  btn-success btn-xs">{{ blog.blog_type }}</button></a>
+                                    {% else %}
+                                        <a href="{% url 'blogs_with_type' blog.blog_type.pk %}"><button type="button" class="btn btn-info btn-xs">{{ blog.blog_type }}</button></a>
+                                    {% endif %}
+                                    {{ blog.created_time|date:"Y-m-d" }}&nbsp;&nbsp;
                                     阅读({{ blog.get_read_num }})&nbsp;&nbsp;
                                     评论({% get_comment_count blog %})&nbsp;&nbsp;
                                     点赞({% get_like_count blog %})
                                 </p>
-                                <p>{{ blog.content|striptags|truncatechars:120 }}</p>
+                                <p>{{ blog.content|striptags|truncatechars:120 }} </p>
                             </div>
                         {% empty %}
                             <div class="blog">

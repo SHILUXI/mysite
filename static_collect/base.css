@@ -16,3 +16,7 @@ ul.navbar-right {
     background-color:#d9534f!important;
 }
 
+ul.navbar-nav {
+    margin-top:0px!important;
+    margin-bottom:0px!important;
+}

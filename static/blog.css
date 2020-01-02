@@ -25,7 +25,6 @@ ul.blog-info-description li{
     margin-right: 1em;
 }
 div.blog-content{
-    text-indent: 2em;
     margin-bottom: 2em;
 }
 div.blog-more {
@@ -73,4 +72,16 @@ div.like {
 
 div.like .active{
     color: #f22;
+}
+
+img {
+    max-width: 100%;
+}
+
+span#cke_1_top {
+    height:28px!important;
+}
+
+div#comment_list {
+    word-break: break-all;
 }
